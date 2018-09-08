@@ -15,7 +15,6 @@ var getRandomAttribute = function (arr) {
   return arr[randInt];
 };
 
-var CATALOG_NUMBERS_MAX = 26;
 
 var CATALOG_NAMES = [
   'Чесночные сливки',
@@ -51,68 +50,66 @@ var CATALOG_NAMES = [
 // адрес изображения для товара. Случайное значение из массива, содержащего пути до изображений, лежащих в папке img/cards
 
 var CATALOG_PICTURE = [
-  '../img/cards/gum-cedar.jpg',
-  '../img/cards/gum-chile.jpg',
-  '../img/cards/gum-eggplant.jpg',
-  '../img/cards/gum-mustard.jpg',
-  '../img/cards/gum-portwine.jpg',
-  '../img/cards/gum-wasabi.jpg',
-  '../img/cards/ice-cucumber.jpg',
-  '../img/cards/ice-eggplant.jpg',
-  '../img/cards/ice-garlic.jpg',
-  '../img/cards/ice-italian.jpg',
-  '../img/cards/ice-mushroom.jpg',
-  '../img/cards/ice-pig.jpg',
-  '../img/cards/marmalade-beer.jpg',
-  '../img/cards/marmalade-caviar.jpg',
-  '../img/cards/marmalade-corn.jpg',
-  '../img/cards/marmalade-new-year.jpg',
-  '../img/cards/marmalade-sour.jpg',
-  '../img/cards/marshmallow-bacon.jpg',
-  '../img/cards/marshmallow-beer.jpg',
-  '../img/cards/marshmallow-shrimp.jpg',
-  '../img/cards/marshmallow-spicy.jpg',
-  '../img/cards/marshmallow-wine.jpg',
-  '../img/cards/soda-bacon.jpg',
-  '../img/cards/soda-celery.jpg',
-  '../img/cards/soda-cob.jpg',
-  '../img/cards/soda-garlic.jpg',
-  '../img/cards/soda-peanut-grapes.jpg',
-  '../img/cards/soda-russian.jpg'
+  './img/cards/gum-cedar.jpg',
+  './img/cards/gum-chile.jpg',
+  './img/cards/gum-eggplant.jpg',
+  './img/cards/gum-mustard.jpg',
+  './img/cards/gum-portwine.jpg',
+  './img/cards/gum-wasabi.jpg',
+  './img/cards/ice-cucumber.jpg',
+  './img/cards/ice-eggplant.jpg',
+  './img/cards/ice-garlic.jpg',
+  './img/cards/ice-italian.jpg',
+  './img/cards/ice-mushroom.jpg',
+  './img/cards/ice-pig.jpg',
+  './img/cards/marmalade-beer.jpg',
+  './img/cards/marmalade-caviar.jpg',
+  './img/cards/marmalade-corn.jpg',
+  './img/cards/marmalade-new-year.jpg',
+  './img/cards/marmalade-sour.jpg',
+  './img/cards/marshmallow-bacon.jpg',
+  './img/cards/marshmallow-beer.jpg',
+  './img/cards/marshmallow-shrimp.jpg',
+  './img/cards/marshmallow-spicy.jpg',
+  './img/cards/marshmallow-wine.jpg',
+  './img/cards/soda-bacon.jpg',
+  './img/cards/soda-celery.jpg',
+  './img/cards/soda-cob.jpg',
+  './img/cards/soda-garlic.jpg',
+  './img/cards/soda-peanut-grapes.jpg',
+  './img/cards/soda-russian.jpg'
 ];
 
-//  catalogAmount от 0 до 20 Количетсво
-var CATALOG_AMOUNT_MIN = 0;
-var CATALOG_AMOUNT_MAX = 20;
-
-// console.log(catalogAmount);
-
-
-// catalogPrice от 100 до 1500, Стоимость
-
-var CATALOG_PRICE_MIN = 100;
-var CATALOG_PRICE_MAX = 1500;
-
-// catalogWeight  от 30 до 300, вес в граммах
-
-var CATALOG_WEIGHT_MIN = 30;
-var CATALOG_WEIGHT_MAX = 300;
-
-// catalogRating  рейтинг: объект
-
-var CATALOG_RAITING_VALUE_MIN = 30;
-var CATALOG_RAITING_VALUE_MAX = 300;
-
-var CATALOG_RAITING_NUMBER_MIN = 10;
-var CATALOG_RAITING_NUMBER_MAX = 900;
-
-var catalogRating = {
-  value: getRandomInt(CATALOG_RAITING_VALUE_MIN, CATALOG_RAITING_VALUE_MAX),
-  number: getRandomInt(CATALOG_RAITING_NUMBER_MIN, CATALOG_RAITING_NUMBER_MAX)
+var catalog = {
+  numbers: {
+    MAX: 26
+  },
+  amount: {
+    MIN: 0,
+    MAX: 20
+  },
+  price: {
+    MIN: 100,
+    MAX: 1500
+  },
+  weight: {
+    MIN: 100,
+    MAX: 300
+  },
+  raitingValue: {
+    MIN: 1,
+    MAX: 5
+  },
+  raitingNumber: {
+    MIN: 10,
+    MAX: 900
+  },
+  nutritionEnergy: {
+    MIN: 70,
+    MAX: 500
+  }
 };
 
-var CATALOG_NUTRITION_ENERGY_MIN = 70;
-var CATALOG_NUTRITION_ENERGY_MAX = 500;
 var CATALOG_NUTRITION_COMMENTS = [
   'молоко',
   'сливки',
@@ -134,40 +131,31 @@ var CATALOG_NUTRITION_COMMENTS = [
   'виллабаджо',
 ];
 
-
-// состав: объект
-var CatalogNutritionFacts = {
-  //  булево значение — содержание сахара. Значение генерируется случайным образом
-  sugar: getRandomBool(),
-
-  // число — энергетическая ценность: целое число от 70 до 500
-  energy: getRandomInt(CATALOG_NUTRITION_ENERGY_MIN, CATALOG_NUTRITION_ENERGY_MAX),
-
-  // строка — состав: сгенерированная случайным образом Для генерации состава нужно выбрать произвольное количество значений, перечисленных ниже и соединить их через запятую
-  contents: getRandomAttribute(CATALOG_NUTRITION_COMMENTS)
-};
-
-
 //  функция создания DOM-элемента на основе JS-объекта
+var catalogCardsArr = [];
 
 var getCharactersCatalog = function () {
-  var catalogCardsArr = [];
-  for (var catalogNumbersMin = 0; catalogNumbersMin < CATALOG_NUMBERS_MAX; catalogNumbersMin++) {
+  for (var catalogNumbersMin = 0; catalogNumbersMin < catalog.numbers.MAX; catalogNumbersMin++) {
     catalogCardsArr.push({
       name: getRandomAttribute(CATALOG_NAMES),
       picture: getRandomAttribute(CATALOG_PICTURE),
-      amount: getRandomInt(CATALOG_AMOUNT_MIN, CATALOG_AMOUNT_MAX),
-      price: getRandomInt(CATALOG_PRICE_MIN, CATALOG_PRICE_MAX),
-      weight: getRandomInt(CATALOG_WEIGHT_MIN, CATALOG_WEIGHT_MAX),
-      rating: catalogRating,
-      nutritionFacts: CatalogNutritionFacts
+      amount: getRandomInt(catalog.amount.MIN, catalog.amount.MAX),
+      price: getRandomInt(catalog.price.MIN, catalog.price.MAX),
+      weight: getRandomInt(catalog.weight.MIN, catalog.weight.MAX),
+      rating: {
+        value: getRandomInt(catalog.raitingValue.MIN, catalog.raitingValue.MAX),
+        number: getRandomInt(catalog.raitingNumber.MIN, catalog.raitingNumber.MAX)
+      },
+      nutritionFacts: {
+        sugar: getRandomBool(),
+        energy: getRandomInt(catalog.nutritionEnergy.MIN, catalog.nutritionEnergy.MAX),
+        contents: getRandomAttribute(CATALOG_NUTRITION_COMMENTS)
+      }
     });
   }
-  return catalogCardsArr;
 };
 
-var catalogCardsArr = getCharactersCatalog();
-
+getCharactersCatalog();
 
 var catalogCards = document.querySelector('.catalog__cards');
 catalogCards.classList.remove('catalog__cards--load');
@@ -175,54 +163,44 @@ catalogCards.classList.remove('catalog__cards--load');
 var catalogLoad = document.querySelector('.catalog__load');
 catalogLoad.classList.add('visually-hidden');
 
-
-var catalogCard = catalogCards.querySelector('.catalog__card');
-
 var similarCatalogTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
-
+var RatingClasses = {
+  1: 'one',
+  2: 'two',
+  3: 'three',
+  4: 'four',
+  5: 'five'
+};
 
 // наполнение блока по шаблону
-function renderCatalogElement(element) {
+function renderCatalogElement(catalogItem) {
   var catalogElement = similarCatalogTemplate.cloneNode(true);
-  catalogElement.querySelector('.card__title').textContent = element.name;
+  catalogElement.querySelector('.card__title').textContent = catalogItem.name;
 
-  if (element.amount > 5) {
-    catalogElement.querySelector('.card--in-stock').textContent = element.amount;
-  } else if (element.amount < 5) {
-    catalogElement.querySelector('.card--little').textContent = element.amount;
-  } else if (element.amount === 0) {
-    catalogElement.querySelector('.card--soon').textContent = element.amount;
+  var goodsImage = catalogElement.querySelector('.card__img');
+  goodsImage.src = catalogItem.picture;
+  goodsImage.alt = catalogItem.name;
+  var AMOUNT_MEDIUM = 5;
+  if (catalogItem.amount > AMOUNT_MEDIUM) {
+    catalogElement.classList.add('.card--in-stock');
+  } else if (catalogItem.amount >= 1 && catalogItem.amount <= AMOUNT_MEDIUM) {
+    catalogElement.classList.add('.card--little');
+  } else if (catalogItem.amount === 0) {
+    catalogElement.classList.add('.card--soon');
   }
 
-  catalogElement.querySelector('.card__currency').textContent = element.price;
-  catalogElement.querySelector('.card__weight').textContent = element.weight;
+  catalogElement.querySelector('.card__price').innerHTML = catalogItem.price + '<span class="card__currency">&#x20BD;</span> <span class="card__weight">/' + catalogItem.weight + 'Г</span>';
 
-  if (element.rating === 1) {
-    catalogElement.querySelector('.stars__rating--one').textContent = element.rating;
-  } else if (element.rating === 2) {
-    catalogElement.querySelector('.stars__rating--two').textContent = element.rating;
-  } else if (element.rating === 3) {
-    catalogElement.querySelector('.stars__rating--three').textContent = element.rating;
-  } else if (element.rating === 4) {
-    catalogElement.querySelector('.stars__rating--four').textContent = element.rating;
-  } else if (element.rating === 5) {
-    catalogElement.querySelector('.stars__rating--five').textContent = element.rating;
-  }
+  var starsRating = catalogElement.querySelector('.stars__rating');
+  starsRating.classList.remove('stars__rating--five');
 
-  catalogElement.querySelector('.star__count').textContent = element.rating.number;
+  starsRating.classList.add('stars__rating--' + RatingClasses[catalogItem.rating.value]);
 
+  catalogElement.querySelector('.star__count').textContent = catalogItem.rating.number;
 
-  // переделать
+  catalogElement.querySelector('.card__characteristic').textContent = catalogItem.nutritionFacts.sugar ? 'Содержит сахар' : 'Без сахара';
 
-  if (element.nutritionFacts.sugar === true) {
-    // catalogElement.querySelector('.card__characteristic').textContent = element.nutritionFacts.sugar;
-    catalogElement.querySelector('.card__characteristic').textContent = 'Содержит сахар';
-  } else {
-    // catalogElement.querySelector('.card__characteristic').textContent = element.nutritionFacts.sugar;
-    catalogElement.querySelector('.card__characteristic').textContent = 'Без сахара';
-  }
-
-  catalogElement.querySelector('.card__composition-list').textContent = element.nutritionFacts.contents;
+  catalogElement.querySelector('.card__composition-list').textContent = catalogItem.nutritionFacts.contents;
 
   return catalogElement;
 }
@@ -233,13 +211,40 @@ var appendCatalog = function () {
   for (var i = 0; i < catalogCardsArr.length; i++) {
     fragment.appendChild(renderCatalogElement(catalogCardsArr[i]));
   }
+
+  catalogCards.appendChild(fragment);
 };
 appendCatalog();
 
-// вставляем fragment в setup-similar-list
+var BASKET_MAX = 3;
+var basketGoods = catalogCardsArr.slice(0, BASKET_MAX);
 
+var basketCards = document.querySelector('.goods__cards');
+basketCards.classList.remove('goods__cards--empty');
 
-catalogCard.appendChild(fragment);
+var cardEmpty = document.querySelector('.goods__card-empty');
+cardEmpty.classList.add('visually-hidden');
+var similarBasketTemplate = document.querySelector('#card-order').content.querySelector('.goods_card');
+// наполнение блока по шаблону
 
-catalogCards.querySelector('.goods__cards').classList.remove('goods__cards--empty');
-catalogCards.querySelector('.goods__cards').classList.remove('goods__card-empty');
+function renderBasketElement(catalogItem) {
+  var basketElement = similarBasketTemplate.cloneNode(true);
+  basketElement.querySelector('.card-order__title').textContent = catalogItem.name;
+
+  var goodsImage = basketElement.querySelector('.card-order__img');
+  goodsImage.src = catalogItem.picture;
+  goodsImage.alt = catalogItem.name;
+  basketElement.querySelector('.card-order__price').innerHTML = catalogItem.price + '<span class="card__currency">&#x20BD;</span>';
+  return basketElement;
+}
+
+var fragmentBasket = document.createDocumentFragment();
+var appendBasket = function () {
+
+  for (var i = 0; i < basketGoods.length; i++) {
+    fragmentBasket.appendChild(renderBasketElement(basketGoods[i]));
+  }
+
+  basketCards.appendChild(fragmentBasket);
+};
+appendBasket();
