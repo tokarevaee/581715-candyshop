@@ -217,7 +217,10 @@ var appendCatalog = function () {
 appendCatalog();
 
 var BASKET_MAX = 3;
-var basketGoods = catalogCardsArr.slice(0, BASKET_MAX);
+var startIndex = getRandomInt(catalog.numbers.MAX - BASKET_MAX, BASKET_MAX);
+var basketGoods = catalogCardsArr.slice(startIndex, (startIndex + BASKET_MAX));
+
+// var basketGoods = catalogCardsArr.slice(getRandomInt(catalog.numbers.MAX - BASKET_MAX), BASKET_MAX);
 
 var basketCards = document.querySelector('.goods__cards');
 basketCards.classList.remove('goods__cards--empty');
