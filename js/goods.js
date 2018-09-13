@@ -216,9 +216,9 @@ var appendCatalog = function () {
 };
 appendCatalog();
 
-var BASKET_MAX = 3;
-var startIndex = getRandomInt(catalog.numbers.MAX - BASKET_MAX, BASKET_MAX);
-var basketGoods = catalogCardsArr.slice(startIndex, (startIndex + BASKET_MAX));
+// var BASKET_MAX = 3;
+// var startIndex = getRandomInt(catalog.numbers.MAX - BASKET_MAX, BASKET_MAX);
+// var basketGoods = catalogCardsArr.slice(startIndex, (startIndex + BASKET_MAX));
 
 // var basketGoods = catalogCardsArr.slice(getRandomInt(catalog.numbers.MAX - BASKET_MAX), BASKET_MAX);
 
@@ -241,13 +241,65 @@ function renderBasketElement(catalogItem) {
   return basketElement;
 }
 
+function basketHeaderTitle(num, expressions) {
+  var result;
+  var count = num % 100;
+  if (count >= 5 && count <= 20) {
+    result = expressions['2'];
+  } else {
+    count = count % 10;
+    if (count === 1) {
+      result = expressions['0'];
+    } else if (count >= 2 && count <= 4) {
+      result = expressions['1'];
+    } else {
+      result = expressions['2'];
+    }
+  }
+  return result;
+}
+
+// Добавление товара в корзину
+
+var basketGoods = [];
 var fragmentBasket = document.createDocumentFragment();
+
 var appendBasket = function () {
 
   for (var i = 0; i < basketGoods.length; i++) {
+
     fragmentBasket.appendChild(renderBasketElement(basketGoods[i]));
   }
-
   basketCards.appendChild(fragmentBasket);
 };
 appendBasket();
+
+// var btnCard = catalogCards.querySelectorAll('.card__btn');
+//
+// var btnCardHandler = function () {
+//   this.style.backgroundColor = 'red';
+// };
+
+// for (var i = 0; i < btnCard.length; i++) {
+//   btnCard[i].addEventListener('click', btnCardHandler);
+// }
+
+
+var basketHeader = document.querySelector('.main-header__basket');
+if (basketGoods.length > 0) {
+  basketHeader.innerHTML = 'В козине ' + basketGoods.length + basketHeaderTitle(basketGoods.length, [' позиция', ' позиции', ' позиций']);
+}
+
+
+// Добавление в Избранное
+
+// var btnFavorite = catalogCards.querySelectorAll('.card__btn-favorite');
+
+// var btnFavoriteHandler = function () {
+//   this.style.backgroundColor = (this.style.backgroundColor === 'red') ? '#e8e8e8' : 'red';
+// };
+//
+// for (var j = 0; j < btnFavorite.length; j++) {
+//   btnFavorite[j].addEventListener('click', btnFavoriteHandler);
+// }
+//
