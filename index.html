@@ -24,7 +24,7 @@
     <h2 class="visually-hidden">Каталог товаров</h2>
 
     <aside class="catalog__sidebar">
-      <form action="/">
+      <form action="/" autocomplete="off">
 
         <ul class="catalog__filter">
           <li class="input-btn">
@@ -144,7 +144,7 @@
   <section class="buy">
     <h2 class="visually-hidden">Оформление покупки</h2>
 
-    <form action="/" method="post">
+    <form action="/" method="post" autocomplete="off">
       <section class="goods">
         <div class="goods__wrap container">
           <h2 class="group-title goods__title" id="basket">Твои покупки</h2>
@@ -207,7 +207,7 @@
             <p class="payment__method toggle-btn">
               <input type="radio" class="toggle-btn__input visually-hidden" name="pay-method" value="card" id="payment__card" checked>
               <label for="payment__card" class="toggle-btn__label">Банковская карта</label>
-              <input type="radio" class="toggle-btn__input visually-hidden" name="pay-method" value="cash" id="payment__cash" checked>
+              <input type="radio" class="toggle-btn__input visually-hidden" name="pay-method" value="cash" id="payment__cash">
               <label for="payment__cash" class="toggle-btn__label">Наличные при получении</label>
             </p>
 

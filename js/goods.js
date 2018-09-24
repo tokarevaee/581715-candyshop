@@ -2,10 +2,6 @@
 
 var basketGoods = [];
 var basketCards = document.querySelector('.goods__cards');
-// var cardEmpty = document.querySelector('.goods__card-empty');
-// var emptyBasket = function () {
-//   cardEmpty.classList.remove('visually-hidden');
-// };
 
 
 //  функция  генерации случайного boolean
@@ -139,7 +135,6 @@ var CATALOG_NUTRITION_COMMENTS = [
   'виллабаджо',
 ];
 
-
 var ratingClasses = {
   1: 'one',
   2: 'two',
@@ -147,15 +142,6 @@ var ratingClasses = {
   4: 'four',
   5: 'five'
 };
-
-
-// var getSimpleAttribute = function (id, min, max) {
-//    var id = [];
-//    for (var i = min; i < max; i++) {
-//      id.push(i);
-//    }
-// };
-
 
 var catalogCards = document.querySelector('.catalog__cards');
 catalogCards.classList.remove('catalog__cards--load');
@@ -191,7 +177,6 @@ var getCharactersCatalog = function () {
 };
 
 getCharactersCatalog();
-
 
 // Отрисовывает карточки по шаблону
 
@@ -237,11 +222,26 @@ var appendCatalog = function () {
 
 appendCatalog();
 
-// Отрисовывает карточки по шаблону end
-
-
 // Добавление товара в корзину
 var fragmentBasket = document.createDocumentFragment();
+
+var removeBasket = function (id) {
+  var newBasket = [];
+  for (var i = 0; i < basketGoods.length; i++) {
+    if (basketGoods[i].id !== id) {
+      newBasket.push(basketGoods[i]);
+    }
+  }
+  basketGoods = newBasket.slice();
+};
+
+var renderBasket = function () {
+  basketCards.innerHTML = '';
+  for (var i = 0; i < basketGoods.length; i++) {
+    fragmentBasket.appendChild(renderBasketElement(basketGoods[i]));
+  }
+  basketCards.appendChild(fragmentBasket);
+};
 
 var renderBasketElement = function (catalogItem) {
   var basketElement = similarBasketTemplate.cloneNode(true);
@@ -255,17 +255,21 @@ var renderBasketElement = function (catalogItem) {
   var btnDecrease = cardOrderAmount.querySelector('.card-order__btn--decrease');
   var basketAmount = basketElement.querySelector('.card-order__count');
   basketAmount.value = 1;
+
   var cardOrderAmountHandler = function (evt) {
     evt.preventDefault();
+    var currentValue = parseInt(basketAmount.value, 10);
     if (evt.target === btnIncrease) {
-      basketAmount.value++;
+      currentValue++;
+      basketAmount.value = currentValue;
     }
     if (evt.target === btnDecrease) {
-      if (basketAmount.value > 1) {
-        basketAmount.value--;
+      if (currentValue > 1) {
+        currentValue--;
+        basketAmount.value = currentValue;
       } else {
-        var targetCard = evt.target.closest('.card-order');
-        basketCards.removeChild(targetCard);
+        removeBasket(catalogItem.id);
+        renderBasket();
       }
     }
   };
@@ -276,55 +280,32 @@ var renderBasketElement = function (catalogItem) {
   orderClose.addEventListener('click', function (evt) {
     evt.preventDefault();
     removeBasket(catalogItem);
-    basketCards.removeChild(basketElement);
-    if (basketGoods.length === 0) {
-      // cardEmpty.classList.remove('visually-hidden');
-    }
+    renderBasket();
   });
-  return basketElement;
 
+  return basketElement;
 };
 
-var removeBasket = function (item) {
-  var index = basketGoods.indexOf(item);
-  if (index > 0) {
-    basketGoods.splice(index, 1);
+// Функция увеличения:
+
+var incCount = function (index) {
+  if (basketGoods[index].amount === basketGoods[index].count) {
+    return;
   }
+  basketGoods[index].count += 1;
 };
 
 var addBasket = function (item) {
   var index = basketGoods.indexOf(item);
   if (index === -1) {
     basketGoods.push(item);
-
-
-  } else {
-    incAmount(index);
+    index = basketGoods.indexOf(item);
+    basketGoods[index].count = 0;
   }
-  appendBasket();
+  incCount(index);
+  renderBasket();
   basketCounting();
 };
-
-
-var appendBasket = function () {
-  basketCards.innerHTML = '';
-  for (var i = 0; i < basketGoods.length; i++) {
-    fragmentBasket.appendChild(renderBasketElement(basketGoods[i]));
-  }
-  basketCards.appendChild(fragmentBasket);
-};
-
-// Функция увеличения:
-
-var incAmount = function (index) {
-  basketGoods[index].amount += 1;
-};
-
-// Функция уменьшения:
-// var decAmount = function (index) {
-//   basketGoods[index].amount -= 1;
-// };
-
 
 var basketHeaderTitle = function (num, expressions) {
   var result;
@@ -346,19 +327,23 @@ var basketHeaderTitle = function (num, expressions) {
 
 var basketCounting = function () {
   var basketHeader = document.querySelector('.main-header__basket');
+  // посчитать count товаров
+  // посчитать стоимость
+  var basketParams = {
+    count: 0,
+    price: 0
+  };
+
   if (basketGoods.length > 0) {
-    basketHeader.innerHTML = 'В корзине ' + basketGoods.length + basketHeaderTitle(basketGoods.length, [' позиция', ' позиции', ' позиций']);
+    for (var i = 0; i < basketGoods.length; i++) {
+      basketParams.count += basketGoods[i].count;
+      basketParams.price += basketGoods[i].price * basketGoods[i].count;
+    }
+    basketHeader.innerHTML = basketParams.count + ' ' + basketHeaderTitle(basketParams.count, ['товар', 'товара', 'товаров']) + ' на сумму ' + basketParams.price + '₽';
   }
 };
 
 basketCounting();
-
-// var BASKET_MAX = 3;
-// var startIndex = getRandomInt(catalog.numbers.MAX - BASKET_MAX, BASKET_MAX);
-// var basketGoods = catalogCardsArr.slice(startIndex, (startIndex + BASKET_MAX));
-//
-// var basketGoods = catalogCardsArr.slice(getRandomInt(catalog.numbers.MAX - BASKET_MAX), BASKET_MAX);
-
 
 var similarBasketTemplate = document.querySelector('#card-order').content.querySelector('.goods_card');
 
@@ -414,4 +399,18 @@ deliverType.addEventListener('click', function () {
   toggleClass(deliverCourierWrap, deliverCourierBtn.checked, 'visually-hidden');
 });
 
+var rangePriceMin = document.querySelector('.range__price--min');
+var rangePriceMax = document.querySelector('.range__price--max');
 
+var rangeButtonLeft = document.querySelector('.range__btn--left');
+var rangeButtonRight = document.querySelector('.range__btn--right');
+
+rangeButtonLeft.addEventListener('mouseup', function () {
+  rangePriceMin.innerHTML = '';
+  rangePriceMin.textContent = 0;
+});
+
+rangeButtonRight.addEventListener('mouseup', function () {
+  rangePriceMax.innerHTML = '';
+  rangePriceMax.textContent = 100;
+});
