@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 'use strict';
 
 var basketGoods = [];
@@ -257,6 +258,7 @@ var renderBasketElement = function (catalogItem) {
   basketAmount.value = 1;
 
   var cardOrderAmountHandler = function (evt) {
+
     evt.preventDefault();
     var currentValue = parseInt(basketAmount.value, 10);
     if (evt.target === btnIncrease) {
@@ -277,10 +279,12 @@ var renderBasketElement = function (catalogItem) {
   cardOrderAmount.addEventListener('click', cardOrderAmountHandler);
 
   var orderClose = basketElement.querySelector('.card-order__close');
+
   orderClose.addEventListener('click', function (evt) {
     evt.preventDefault();
-    removeBasket(catalogItem);
+    removeBasket(catalogItem.id);
     renderBasket();
+    basketCounting();
   });
 
   return basketElement;
@@ -293,6 +297,7 @@ var incCount = function (index) {
     return;
   }
   basketGoods[index].count += 1;
+  basketCounting();
 };
 
 var addBasket = function (item) {
@@ -327,8 +332,6 @@ var basketHeaderTitle = function (num, expressions) {
 
 var basketCounting = function () {
   var basketHeader = document.querySelector('.main-header__basket');
-  // посчитать count товаров
-  // посчитать стоимость
   var basketParams = {
     count: 0,
     price: 0
@@ -341,6 +344,7 @@ var basketCounting = function () {
     }
     basketHeader.innerHTML = basketParams.count + ' ' + basketHeaderTitle(basketParams.count, ['товар', 'товара', 'товаров']) + ' на сумму ' + basketParams.price + '₽';
   }
+  renderBasket();
 };
 
 basketCounting();
@@ -399,18 +403,86 @@ deliverType.addEventListener('click', function () {
   toggleClass(deliverCourierWrap, deliverCourierBtn.checked, 'visually-hidden');
 });
 
-var rangePriceMin = document.querySelector('.range__price--min');
-var rangePriceMax = document.querySelector('.range__price--max');
 
-var rangeButtonLeft = document.querySelector('.range__btn--left');
-var rangeButtonRight = document.querySelector('.range__btn--right');
-
-rangeButtonLeft.addEventListener('mouseup', function () {
-  rangePriceMin.innerHTML = '';
-  rangePriceMin.textContent = 0;
+// ОБРАБАТЫВАЕМ ОТПУСКАНИЕ .range__btn в фильтре по цене:
+var rangeFilter = document.querySelector('.range');
+rangeFilter.addEventListener('mouseup', function (event) {
+  if (event.target.classList.contains('range__btn--left')) {
+    setPriceLimit('left', 'min', true);
+  } else if (event.target.classList.contains('range__btn--right')) {
+    setPriceLimit('right', 'max', false);
+  }
 });
+// Изменение значения min и max цены в фильтре:
+function setPriceLimit(style, limit, isMin) {
+  var currentBtn = event.target;
+  style = window.getComputedStyle(currentBtn).getPropertyValue(style);
+  var value = +style.slice(0, -2) * 100 / 245;
+  var priceValue = null;
+  priceValue = isMin ? value : 100 - value;
+  var rangePrice = document.querySelector('.range__price--' + limit);
+  rangePrice.textContent = priceValue;
+}
 
-rangeButtonRight.addEventListener('mouseup', function () {
-  rangePriceMax.innerHTML = '';
-  rangePriceMax.textContent = 100;
+
+// валидация формы
+
+var contactData = document.querySelector('.contact-data');
+var userNameInput = contactData.querySelector('#contact-data__name');
+
+
+var userNameInputHandler = function (input) {
+  if (input.validity.tooShort) {
+    input.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  } else if (input.validity.tooLong) {
+    input.setCustomValidity('Имя не должно превышать 25-ти символов');
+  } else if (input === 0) {
+    input.setCustomValidity('Обязательное поле');
+  } else {
+    input.setCustomValidity('');
+  }
+};
+
+userNameInput.addEventListener('invalid', userNameInputHandler(userNameInput));
+
+var formPayment = document.querySelector('.payment');
+var paymentCardNumber = formPayment.querySelector('#payment__card-number');
+var MAX_CARD_LENGTH = 16;
+
+var validationCardNumber = function () {
+  var cardValue = paymentCardNumber.value;
+  var charLess = cardValue.replace(/\D/g, '');
+  if (charLess.length === 0) {
+    return;
+  }
+  var arrayNumber = charLess.split('');
+
+  if (arrayNumber.length === MAX_CARD_LENGTH) {
+    var value;
+    var checkSum = 0;
+
+    for (var i = 0; i < cardValue.length; i++) {
+      var number = +arrayNumber[i];
+      if (i % 2 === 0) {
+        value = number * 2;
+        if (value > 9) {
+          value -= 9;
+        }
+        checkSum += value;
+      } else {
+        checkSum += number;
+      }
+    } return checkSum % 10 === 0;
+  }
+};
+
+
+// добавим валидацию карты на поле с номером карты
+
+paymentCardNumber.addEventListener('blur', function () {
+  if (validationCardNumber(paymentCardNumber.value)) {
+    document.querySelector('.payment__card-status').textContent = 'номер введен верно';
+  } else {
+    document.querySelector('.payment__card-status').textContent = 'не определен';
+  }
 });
