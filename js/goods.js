@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 'use strict';
 
 var basketGoods = [];
@@ -378,14 +377,21 @@ var toggleClass = function (element, add, name) {
 
 var paymentType = document.querySelector('.payment__method');
 var paymentWrap = document.querySelector('.payment');
+
 var paymentCardWrap = paymentWrap.querySelector('.payment__card-wrap');
 var paymentCashWrap = paymentWrap.querySelector('.payment__cash-wrap');
-var paymentCardBtn = document.getElementById('payment__card');
-var paymentCashBtn = document.getElementById('payment__cash');
+var paymentCardBtn = document.querySelector('#payment__card');
+var paymentCashBtn = document.querySelector('#payment__cash');
+var inputCardWrap = paymentCardWrap.querySelectorAll('input');
 
 paymentType.addEventListener('click', function () {
   toggleClass(paymentCardWrap, paymentCardBtn.checked, 'visually-hidden');
   toggleClass(paymentCashWrap, paymentCashBtn.checked, 'visually-hidden');
+  if (paymentCashBtn.checked) {
+    for (var i = 0; i < inputCardWrap.length; i++) {
+      inputCardWrap[i].setAttribute('disabled', '');
+    }
+  }
 });
 
 // функция выбора доставки
@@ -394,8 +400,8 @@ var deliverType = document.querySelector('.deliver__toggle');
 var deliverWrap = document.querySelector('.deliver');
 var deliverStoredWrap = deliverWrap.querySelector('.deliver__store');
 var deliverCourierWrap = deliverWrap.querySelector('.deliver__courier');
-var deliverStoreBtn = document.getElementById('deliver__store');
-var deliverCourierBtn = document.getElementById('deliver__courier');
+var deliverStoreBtn = document.querySelector('#deliver__store');
+var deliverCourierBtn = document.querySelector('#deliver__courier');
 
 
 deliverType.addEventListener('click', function () {
@@ -403,29 +409,7 @@ deliverType.addEventListener('click', function () {
   toggleClass(deliverCourierWrap, deliverCourierBtn.checked, 'visually-hidden');
 });
 
-
-// ОБРАБАТЫВАЕМ ОТПУСКАНИЕ .range__btn в фильтре по цене:
-var rangeFilter = document.querySelector('.range');
-rangeFilter.addEventListener('mouseup', function (event) {
-  if (event.target.classList.contains('range__btn--left')) {
-    setPriceLimit('left', 'min', true);
-  } else if (event.target.classList.contains('range__btn--right')) {
-    setPriceLimit('right', 'max', false);
-  }
-});
-// Изменение значения min и max цены в фильтре:
-function setPriceLimit(style, limit, isMin) {
-  var currentBtn = event.target;
-  style = window.getComputedStyle(currentBtn).getPropertyValue(style);
-  var value = +style.slice(0, -2) * 100 / 245;
-  var priceValue = null;
-  priceValue = isMin ? value : 100 - value;
-  var rangePrice = document.querySelector('.range__price--' + limit);
-  rangePrice.textContent = priceValue;
-}
-
-
-// валидация формы
+// валидация формы order.js
 
 var contactData = document.querySelector('.contact-data');
 var userNameInput = contactData.querySelector('#contact-data__name');
@@ -445,44 +429,66 @@ var userNameInputHandler = function (input) {
 
 userNameInput.addEventListener('invalid', userNameInputHandler(userNameInput));
 
-var formPayment = document.querySelector('.payment');
-var paymentCardNumber = formPayment.querySelector('#payment__card-number');
-var MAX_CARD_LENGTH = 16;
+// var formPayment = document.querySelector('.payment');
+// var paymentCardNumber = formPayment.querySelector('#payment__card-number');
+// var MAX_CARD_LENGTH = 16;
 
-var validationCardNumber = function () {
-  var cardValue = paymentCardNumber.value;
-  var charLess = cardValue.replace(/\D/g, '');
-  if (charLess.length === 0) {
-    return;
-  }
-  var arrayNumber = charLess.split('');
+// estLint не принимает последний return поэтому закомментировано. но функция работала.
 
-  if (arrayNumber.length === MAX_CARD_LENGTH) {
-    var value;
-    var checkSum = 0;
-
-    for (var i = 0; i < cardValue.length; i++) {
-      var number = +arrayNumber[i];
-      if (i % 2 === 0) {
-        value = number * 2;
-        if (value > 9) {
-          value -= 9;
-        }
-        checkSum += value;
-      } else {
-        checkSum += number;
-      }
-    } return checkSum % 10 === 0;
-  }
-};
+// var validationCardNumber = function () {
+//   var cardValue = paymentCardNumber.value;
+//   var charLess = cardValue.replace(/\D/g, '');
+//   if (charLess.length === 0) {
+//     return;
+//   }
+//   var arrayNumber = charLess.split('');
+//
+//   if (arrayNumber.length === MAX_CARD_LENGTH) {
+//     var value;
+//     var checkSum = 0;
+//
+//     for (var i = 0; i < cardValue.length; i++) {
+//       var number = +arrayNumber[i];
+//       if (i % 2 === 0) {
+//         value = number * 2;
+//         if (value > 9) {
+//           value -= 9;
+//         }
+//         checkSum += value;
+//       } else {
+//         checkSum += number;
+//       }
+//     } return checkSum % 10 === 0;
+//   }
+// };
 
 
 // добавим валидацию карты на поле с номером карты
 
-paymentCardNumber.addEventListener('blur', function () {
-  if (validationCardNumber(paymentCardNumber.value)) {
-    document.querySelector('.payment__card-status').textContent = 'номер введен верно';
-  } else {
-    document.querySelector('.payment__card-status').textContent = 'не определен';
+// paymentCardNumber.addEventListener('blur', function () {
+//   if (validationCardNumber(paymentCardNumber.value)) {
+//     document.querySelector('.payment__card-status').textContent = 'одобрен';
+//   } else {
+//     document.querySelector('.payment__card-status').textContent = 'не определен';
+//   }
+// });
+
+// ОБРАБАТЫВАЕМ ОТПУСКАНИЕ .range__btn в фильтре по цене://///////////////////////////////////////////////////////
+var rangeFilter = document.querySelector('.range');
+rangeFilter.addEventListener('mouseup', function (event) {
+  if (event.target.classList.contains('range__btn--left')) {
+    setPriceLimit('left', 'min', true);
+  } else if (event.target.classList.contains('range__btn--right')) {
+    setPriceLimit('right', 'max', false);
   }
 });
+// Изменение значения min и max цены в фильтре:
+function setPriceLimit(style, limit, isMin) {
+  var currentBtn = event.target;
+  style = window.getComputedStyle(currentBtn).getPropertyValue(style);
+  var value = +style.slice(0, -2) * 100 / 245;
+  var priceValue = null;
+  priceValue = isMin ? value : 100 - value;
+  var rangePrice = document.querySelector('.range__price--' + limit);
+  rangePrice.textContent = priceValue;
+}
