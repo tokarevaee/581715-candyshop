@@ -429,47 +429,48 @@ var userNameInputHandler = function (input) {
 
 userNameInput.addEventListener('invalid', userNameInputHandler(userNameInput));
 
-var formPayment = document.querySelector('.payment');
-var paymentCardNumber = formPayment.querySelector('#payment__card-number');
-var MAX_CARD_LENGTH = 16;
+// var formPayment = document.querySelector('.payment');
+// var paymentCardNumber = formPayment.querySelector('#payment__card-number');
+// var MAX_CARD_LENGTH = 16;
 
 // estLint не принимает последний return поэтому закомментировано. но функция работала.
 
-var validationCardNumber = function () {
-  var cardValue = paymentCardNumber.value;
-  var charLess = cardValue.replace(/\D/g, '');
-  if (charLess.length === 0) {
-    return;
-  }
-  var arrayNumber = charLess.split('');
+// var validationCardNumber = function () {
+//   var cardValue = paymentCardNumber.value;
+//   var charLess = cardValue.replace(/\D/g, '');
+//   if (charLess.length === 0) {
+//     return;
+//   }
+//   var arrayNumber = charLess.split('');
+//
+//   if (arrayNumber.length === MAX_CARD_LENGTH) {
+//     var value;
+//     var checkSum = 0;
+//     for (var i = 0; i < cardValue.length; i++) {
+//       var number = +arrayNumber[i];
+//       if (i % 2 === 0) {
+//         value = number * 2;
+//         if (value > 9) {
+//           value -= 9;
+//         }
+//         checkSum += value;
+//       } else {
+//         checkSum += number;
+//       }
+//     }
+//   }
+//   return checkSum % 10 === 0;
+// };
 
-  if (arrayNumber.length === MAX_CARD_LENGTH) {
-    var value;
-    var checkSum = 0;
-    for (var i = 0; i < cardValue.length; i++) {
-      var number = +arrayNumber[i];
-      if (i % 2 === 0) {
-        value = number * 2;
-        if (value > 9) {
-          value -= 9;
-        }
-        checkSum += value;
-      } else {
-        checkSum += number;
-      }
-    }
-  }
-  return checkSum % 10 === 0;
-};
 // добавим валидацию карты на поле с номером карты
 
-paymentCardNumber.addEventListener('blur', function () {
-  if (validationCardNumber(paymentCardNumber.value)) {
-    document.querySelector('.payment__card-status').textContent = 'одобрен';
-  } else {
-    document.querySelector('.payment__card-status').textContent = 'не определен';
-  }
-});
+// paymentCardNumber.addEventListener('blur', function () {
+//   if (validationCardNumber(paymentCardNumber.value)) {
+//     document.querySelector('.payment__card-status').textContent = 'одобрен';
+//   } else {
+//     document.querySelector('.payment__card-status').textContent = 'не определен';
+//   }
+// });
 
 // ОБРАБАТЫВАЕМ  .range__btn в фильтре по цене://///////////////////////////////////////////////////////
 
