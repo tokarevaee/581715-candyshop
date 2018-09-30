@@ -429,66 +429,116 @@ var userNameInputHandler = function (input) {
 
 userNameInput.addEventListener('invalid', userNameInputHandler(userNameInput));
 
-// var formPayment = document.querySelector('.payment');
-// var paymentCardNumber = formPayment.querySelector('#payment__card-number');
-// var MAX_CARD_LENGTH = 16;
+var formPayment = document.querySelector('.payment');
+var paymentCardNumber = formPayment.querySelector('#payment__card-number');
+var MAX_CARD_LENGTH = 16;
 
 // estLint не принимает последний return поэтому закомментировано. но функция работала.
 
-// var validationCardNumber = function () {
-//   var cardValue = paymentCardNumber.value;
-//   var charLess = cardValue.replace(/\D/g, '');
-//   if (charLess.length === 0) {
-//     return;
-//   }
-//   var arrayNumber = charLess.split('');
-//
-//   if (arrayNumber.length === MAX_CARD_LENGTH) {
-//     var value;
-//     var checkSum = 0;
-//
-//     for (var i = 0; i < cardValue.length; i++) {
-//       var number = +arrayNumber[i];
-//       if (i % 2 === 0) {
-//         value = number * 2;
-//         if (value > 9) {
-//           value -= 9;
-//         }
-//         checkSum += value;
-//       } else {
-//         checkSum += number;
-//       }
-//     } return checkSum % 10 === 0;
-//   }
-// };
+var validationCardNumber = function () {
+  var cardValue = paymentCardNumber.value;
+  var charLess = cardValue.replace(/\D/g, '');
+  if (charLess.length === 0) {
+    return;
+  }
+  var arrayNumber = charLess.split('');
 
-
+  if (arrayNumber.length === MAX_CARD_LENGTH) {
+    var value;
+    var checkSum = 0;
+    for (var i = 0; i < cardValue.length; i++) {
+      var number = +arrayNumber[i];
+      if (i % 2 === 0) {
+        value = number * 2;
+        if (value > 9) {
+          value -= 9;
+        }
+        checkSum += value;
+      } else {
+        checkSum += number;
+      }
+    }
+  }
+  return checkSum % 10 === 0;
+};
 // добавим валидацию карты на поле с номером карты
 
-// paymentCardNumber.addEventListener('blur', function () {
-//   if (validationCardNumber(paymentCardNumber.value)) {
-//     document.querySelector('.payment__card-status').textContent = 'одобрен';
-//   } else {
-//     document.querySelector('.payment__card-status').textContent = 'не определен';
-//   }
-// });
-
-// ОБРАБАТЫВАЕМ ОТПУСКАНИЕ .range__btn в фильтре по цене://///////////////////////////////////////////////////////
-var rangeFilter = document.querySelector('.range');
-rangeFilter.addEventListener('mouseup', function (event) {
-  if (event.target.classList.contains('range__btn--left')) {
-    setPriceLimit('left', 'min', true);
-  } else if (event.target.classList.contains('range__btn--right')) {
-    setPriceLimit('right', 'max', false);
+paymentCardNumber.addEventListener('blur', function () {
+  if (validationCardNumber(paymentCardNumber.value)) {
+    document.querySelector('.payment__card-status').textContent = 'одобрен';
+  } else {
+    document.querySelector('.payment__card-status').textContent = 'не определен';
   }
 });
-// Изменение значения min и max цены в фильтре:
-function setPriceLimit(style, limit, isMin) {
-  var currentBtn = event.target;
-  style = window.getComputedStyle(currentBtn).getPropertyValue(style);
-  var value = +style.slice(0, -2) * 100 / 245;
-  var priceValue = null;
-  priceValue = isMin ? value : 100 - value;
-  var rangePrice = document.querySelector('.range__price--' + limit);
-  rangePrice.textContent = priceValue;
-}
+
+// ОБРАБАТЫВАЕМ  .range__btn в фильтре по цене://///////////////////////////////////////////////////////
+
+var priceRangeBar = document.querySelector('.range__filter');
+var priceRangeBtnLeft = priceRangeBar.querySelector('.range__btn--left');
+var priceRangeBtnRight = priceRangeBar.querySelector('.range__btn--right');
+var priceBtnWidth = priceRangeBtnLeft.offsetWidth;
+var priceRangeLine = priceRangeBar.querySelector('.range__fill-line');
+var priceRangeBarWidth = priceRangeBar.offsetWidth - priceBtnWidth;
+var leftEdge = priceRangeBar.getBoundingClientRect().left;
+var rightEdge = priceRangeBar.getBoundingClientRect().right - priceBtnWidth;
+var rangePriceMin = document.querySelector('.range__price--min');
+var rangePriceMax = document.querySelector('.range__price--max');
+var MIN_PRICE = 60;
+var MAX_PRICE = 230;
+var positionBtnLeft = 0;
+var positionBtnRight = rightEdge - leftEdge;
+priceRangeBtnLeft.style.left = positionBtnLeft + 'px';
+priceRangeBtnRight.style.left = positionBtnRight + 'px';
+priceRangeLine.style.left = positionBtnLeft + priceBtnWidth / 2 + 'px';
+priceRangeLine.style.right = priceRangeBarWidth - positionBtnRight + priceBtnWidth / 2 + 'px';
+
+
+var calcPriceValue = function (positionBtn) {
+  return Math.round(positionBtn / priceRangeBarWidth * (MAX_PRICE - MIN_PRICE) + MIN_PRICE);
+};
+
+rangePriceMin.textContent = calcPriceValue(positionBtnLeft);
+rangePriceMax.textContent = calcPriceValue(positionBtnRight);
+
+var priceRangeBtnHandler = function (evt, buttonElement, minLeft, maxRight, priceEl, isLeftBtn) {
+  var shiftX = evt.clientX - buttonElement.getBoundingClientRect().left;
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
+  function onMouseMove(event) {
+    var newLeft = event.clientX - shiftX - leftEdge;
+
+    if (newLeft < minLeft) {
+      newLeft = minLeft;
+    } else if (newLeft > maxRight) {
+      newLeft = maxRight;
+    }
+
+    buttonElement.style.left = newLeft + 'px';
+    priceEl.textContent = calcPriceValue(newLeft);
+
+    if (isLeftBtn) {
+      priceRangeLine.style.left = newLeft + shiftX + 'px';
+      positionBtnLeft = newLeft;
+    } else {
+      priceRangeLine.style.right = priceRangeBarWidth - newLeft + shiftX + 'px';
+      positionBtnRight = newLeft;
+    }
+  }
+
+  function onMouseUp() {
+    document.removeEventListener('mouseup', onMouseUp);
+    document.removeEventListener('mousemove', onMouseMove);
+  }
+};
+
+
+priceRangeBtnLeft.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+  priceRangeBtnHandler(evt, priceRangeBtnLeft, 0, positionBtnRight, rangePriceMin, true);
+});
+
+priceRangeBtnRight.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+  priceRangeBtnHandler(evt, priceRangeBtnRight, positionBtnLeft, priceRangeBarWidth, rangePriceMax, false);
+});
