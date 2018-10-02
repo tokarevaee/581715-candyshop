@@ -365,11 +365,10 @@ for (var j = 0; j < btnFavorite.length; j++) {
 
 
 // функция disable неактивных input-ов
-var disableField = function (element, isDisable, isRequired) {
-  var inputs = element.querySelectorAll('input').disable = true;
+var disableField = function (element, isDisable) {
+  var inputs = element.querySelectorAll('input');
   for (var i = 0; i < inputs.length; i++) {
     inputs[i].disabled = isDisable;
-    inputs[i].required = isRequired;
   }
 };
 var orderField = document.querySelector('#order');
@@ -389,16 +388,21 @@ var paymentCardWrap = payment.querySelector('.payment__card-wrap');
 // доставка
 
 var toggleDelivery = function (evt) {
+  var inputsChecked = deliverStore.querySelector('input[checked]');
   if (evt.target.id === 'deliver__courier') {
     deliverCourier.classList.remove('visually-hidden');
     deliverStore.classList.add('visually-hidden');
     textareaDeliver.disabled = false;
-    disableField(deliverCourier, false, true);
+    disableField(deliverCourier, false);
+
+    inputsChecked.setAttribute('disabled', 'true');
+
   } else if (evt.target.id === 'deliver__store') {
     deliverStore.classList.remove('visually-hidden');
     deliverCourier.classList.add('visually-hidden');
-    disableField(deliverCourier, true, false);
+    disableField(deliverCourier, true);
     textareaDeliver.disabled = true;
+    inputsChecked.removeAttribute('disabled', 'false');
   }
 };
 
@@ -507,7 +511,6 @@ var validationCardCvc = function () {
     }
   } return false;
 };
-
 
 paymentCardNumber.addEventListener('blur', function () {
   if (validationCardNumber() && paymentCardDateValidate() && validationCardCvc()) {
