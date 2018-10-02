@@ -498,15 +498,15 @@ var validationCardNumber = function () {
 // добавим валидацию карты на поле с номером карты
 
 var validationCvc = formPayment.querySelector('#payment__card-cvc');
-var validationCvcValue = validationCvc.value;
 
 var validationCardCvc = function () {
-  // var arrayCardCvc = validationCvcValue.split('');
-  return validationCvcValue.length !== 0;
-  // if (validationCvcValue.length !== 0) {
-  //   return false;
-  // }
-  // return true;
+  var arrayCardCvc = validationCvc.value.split('');
+  // return validationCvcValue.length !== 0;
+  if (validationCvc.value.length !== 0) {
+    if (arrayCardCvc[0] > 0) {
+      return true;
+    }
+  } return false;
 };
 
 
