@@ -366,7 +366,7 @@ for (var j = 0; j < btnFavorite.length; j++) {
 
 // функция disable неактивных input-ов
 var disableField = function (element, isDisable, isRequired) {
-  var inputs = element.querySelectorAll('input');
+  var inputs = element.querySelectorAll('input').disable = true;
   for (var i = 0; i < inputs.length; i++) {
     inputs[i].disabled = isDisable;
     inputs[i].required = isRequired;
@@ -501,7 +501,6 @@ var validationCvc = formPayment.querySelector('#payment__card-cvc');
 
 var validationCardCvc = function () {
   var arrayCardCvc = validationCvc.value.split('');
-  // return validationCvcValue.length !== 0;
   if (validationCvc.value.length !== 0) {
     if (arrayCardCvc[0] > 0) {
       return true;
