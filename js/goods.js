@@ -363,51 +363,60 @@ for (var j = 0; j < btnFavorite.length; j++) {
   btnFavorite[j].addEventListener('click', btnFavoriteHandler);
 }
 
-// функция выбора
 
-var toggleClass = function (element, add, name) {
-  if (add) {
-    element.classList.remove(name);
-  } else {
-    element.classList.add(name);
+// функция disable неактивных input-ов
+var disableField = function (element, isDisable, isRequired) {
+  var inputs = element.querySelectorAll('input');
+  for (var i = 0; i < inputs.length; i++) {
+    inputs[i].disabled = isDisable;
+    inputs[i].required = isRequired;
+  }
+};
+var orderField = document.querySelector('#order');
+
+// Доставка
+
+var deliverWrap = orderField.querySelector('.deliver');
+var deliverCourier = deliverWrap.querySelector('.deliver__courier');
+var deliverStore = deliverWrap.querySelector('.deliver__store');
+var textareaDeliver = deliverCourier.querySelector('textarea');
+
+// Оплата
+var payment = orderField.querySelector('.payment');
+var paymentCashWrap = payment.querySelector('.payment__cash-wrap');
+var paymentCardWrap = payment.querySelector('.payment__card-wrap');
+
+// доставка
+
+var toggleDelivery = function (evt) {
+  if (evt.target.id === 'deliver__courier') {
+    deliverCourier.classList.remove('visually-hidden');
+    deliverStore.classList.add('visually-hidden');
+    textareaDeliver.disabled = false;
+    disableField(deliverCourier, false, true);
+  } else if (evt.target.id === 'deliver__store') {
+    deliverStore.classList.remove('visually-hidden');
+    deliverCourier.classList.add('visually-hidden');
+    disableField(deliverCourier, true, false);
+    textareaDeliver.disabled = true;
   }
 };
 
-// функция выбора метода платежа
-
-var paymentType = document.querySelector('.payment__method');
-var paymentWrap = document.querySelector('.payment');
-
-var paymentCardWrap = paymentWrap.querySelector('.payment__card-wrap');
-var paymentCashWrap = paymentWrap.querySelector('.payment__cash-wrap');
-var paymentCardBtn = document.querySelector('#payment__card');
-var paymentCashBtn = document.querySelector('#payment__cash');
-var inputCardWrap = paymentCardWrap.querySelectorAll('input');
-
-paymentType.addEventListener('click', function () {
-  toggleClass(paymentCardWrap, paymentCardBtn.checked, 'visually-hidden');
-  toggleClass(paymentCashWrap, paymentCashBtn.checked, 'visually-hidden');
-  if (paymentCashBtn.checked) {
-    for (var i = 0; i < inputCardWrap.length; i++) {
-      inputCardWrap[i].setAttribute('disabled', '');
-    }
+// Переключение способа оплаты
+var togglePayment = function (evt) {
+  if (evt.target.id === 'payment__cash') {
+    paymentCashWrap.classList.remove('visually-hidden');
+    paymentCardWrap.classList.add('visually-hidden');
+    disableField(paymentCardWrap, true);
+  } else if (evt.target.id === 'payment__card') {
+    paymentCardWrap.classList.remove('visually-hidden');
+    paymentCashWrap.classList.add('visually-hidden');
+    disableField(paymentCardWrap, false);
   }
-});
+};
 
-// функция выбора доставки
-
-var deliverType = document.querySelector('.deliver__toggle');
-var deliverWrap = document.querySelector('.deliver');
-var deliverStoredWrap = deliverWrap.querySelector('.deliver__store');
-var deliverCourierWrap = deliverWrap.querySelector('.deliver__courier');
-var deliverStoreBtn = document.querySelector('#deliver__store');
-var deliverCourierBtn = document.querySelector('#deliver__courier');
-
-
-deliverType.addEventListener('click', function () {
-  toggleClass(deliverStoredWrap, deliverStoreBtn.checked, 'visually-hidden');
-  toggleClass(deliverCourierWrap, deliverCourierBtn.checked, 'visually-hidden');
-});
+deliverWrap.addEventListener('click', toggleDelivery);
+payment.addEventListener('click', togglePayment);
 
 // валидация формы order.js
 
@@ -430,6 +439,31 @@ var userNameInputHandler = function (input) {
 userNameInput.addEventListener('invalid', userNameInputHandler(userNameInput));
 
 var formPayment = document.querySelector('.payment');
+var paymentCardDate = formPayment.querySelector('#payment__card-date');
+
+
+var paymentCardDateValidate = function () {
+  if (paymentCardDate.value.length !== 0) {
+    var paymentDateValue = paymentCardDate.value.split('/');
+
+    if (!paymentDateValue[0] || paymentDateValue[0].length !== 2) {
+      paymentCardDate.setCustomValidity('месяц не корректен');
+    } else if (paymentDateValue[0] === '00' || paymentDateValue[0] > 12) {
+      paymentCardDate.setCustomValidity('месяц не корректен. Диапазон от 01 до 12');
+    } else if (!paymentDateValue[1] || paymentDateValue[1].length !== 2 || paymentDateValue[1] < 18) {
+      paymentCardDate.setCustomValidity('год не корректен');
+    } else {
+      paymentCardDate.setCustomValidity('');
+      return true;
+    }
+  }
+  return false;
+};
+
+// paymentCardDate.addEventListener('invalid', paymentCardDateHandler());
+
+// 6011000990139424
+
 var paymentCardNumber = formPayment.querySelector('#payment__card-number');
 var MAX_CARD_LENGTH = 16;
 
@@ -463,8 +497,21 @@ var validationCardNumber = function () {
 
 // добавим валидацию карты на поле с номером карты
 
+var validationCvc = formPayment.querySelector('#payment__card-cvc');
+var validationCvcValue = validationCvc.value;
+
+var validationCardCvc = function () {
+  // var arrayCardCvc = validationCvcValue.split('');
+  return validationCvcValue.length !== 0;
+  // if (validationCvcValue.length !== 0) {
+  //   return false;
+  // }
+  // return true;
+};
+
+
 paymentCardNumber.addEventListener('blur', function () {
-  if (validationCardNumber()) {
+  if (validationCardNumber() && paymentCardDateValidate() && validationCardCvc()) {
     document.querySelector('.payment__card-status').textContent = 'одобрен';
   } else {
     document.querySelector('.payment__card-status').textContent = 'не определен';
