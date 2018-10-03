@@ -211,12 +211,12 @@ var renderCatalogElement = function (catalogItem) {
 };
 
 var fragment = document.createDocumentFragment();
+
 var appendCatalog = function () {
 
   for (var i = 0; i < catalogCardsArr.length; i++) {
     fragment.appendChild(renderCatalogElement(catalogCardsArr[i]), i);
   }
-
   catalogCards.appendChild(fragment);
 };
 
@@ -235,6 +235,7 @@ var removeBasket = function (id) {
   basketGoods = newBasket.slice();
 };
 
+// clearCard();
 var renderBasket = function () {
   basketCards.innerHTML = '';
   for (var i = 0; i < basketGoods.length; i++) {
@@ -285,9 +286,9 @@ var renderBasketElement = function (catalogItem) {
     renderBasket();
     basketCounting();
   });
-
   return basketElement;
 };
+
 
 // Функция увеличения:
 
@@ -342,6 +343,8 @@ var basketCounting = function () {
       basketParams.price += basketGoods[i].price * basketGoods[i].count;
     }
     basketHeader.innerHTML = basketParams.count + ' ' + basketHeaderTitle(basketParams.count, ['товар', 'товара', 'товаров']) + ' на сумму ' + basketParams.price + '₽';
+  } else {
+    basketHeader.textContent = 'В корзине ничего нет';
   }
   renderBasket();
 };
@@ -358,18 +361,16 @@ var btnFavoriteHandler = function (evt) {
   evt.preventDefault();
   evt.target.classList.toggle('card__btn-favorite--selected');
 };
-
-for (var j = 0; j < btnFavorite.length; j++) {
-  btnFavorite[j].addEventListener('click', btnFavoriteHandler);
-}
-
+btnFavorite.forEach(function (btn) {
+  btn.addEventListener('click', btnFavoriteHandler);
+});
 
 // функция disable неактивных input-ов
 var disableField = function (element, isDisable) {
   var inputs = element.querySelectorAll('input');
-  for (var i = 0; i < inputs.length; i++) {
-    inputs[i].disabled = isDisable;
-  }
+  inputs.forEach(function (input) {
+    input.disabled = isDisable;
+  });
 };
 var orderField = document.querySelector('#order');
 
@@ -422,7 +423,7 @@ var togglePayment = function (evt) {
 deliverWrap.addEventListener('click', toggleDelivery);
 payment.addEventListener('click', togglePayment);
 
-// валидация формы order.js
+// валидация имени владельца карты
 
 var contactData = document.querySelector('.contact-data');
 var userNameInput = contactData.querySelector('#contact-data__name');
@@ -442,9 +443,40 @@ var userNameInputHandler = function (input) {
 
 userNameInput.addEventListener('invalid', userNameInputHandler(userNameInput));
 
-var formPayment = document.querySelector('.payment');
-var paymentCardDate = formPayment.querySelector('#payment__card-date');
+// Проверка статусы карты
 
+var cardNumber = payment.querySelector('#payment__card-number');
+var cardCvc = payment.querySelector('#payment__card-cvc');
+var cardholder = payment.querySelector('#payment__cardholder');
+var cardDate = payment.querySelector('#payment__card-date');
+var cardStatus = payment.querySelector('.payment__card-status');
+
+var validationCardStatus = function () {
+  var number = cardNumber.checkValidity();
+  var cvc = cardCvc.checkValidity();
+  var name = cardholder.checkValidity();
+  var date = cardDate.checkValidity();
+  if (number && cvc && name && date) {
+    cardStatus.textContent = 'Определен';
+  } else {
+    cardStatus.textContent = 'Не определен';
+  }
+};
+
+// держатель карты
+
+cardholder.addEventListener('blur', function () {
+  validationCardStatus();
+});
+
+// валидация формы order.js
+
+
+var formPayment = document.querySelector('.payment');
+
+// валидация даты действия карты
+
+var paymentCardDate = formPayment.querySelector('#payment__card-date');
 
 var paymentCardDateValidate = function () {
   if (paymentCardDate.value.length !== 0) {
@@ -461,12 +493,15 @@ var paymentCardDateValidate = function () {
       return true;
     }
   }
+  validationCardStatus();
   return false;
 };
 
-// paymentCardDate.addEventListener('invalid', paymentCardDateHandler());
+cardDate.addEventListener('blur', paymentCardDateValidate);
 
-// 6011000990139424
+
+// Проверка введенного номера карты
+// 6011000990139424 валидация номера карты
 
 var paymentCardNumber = formPayment.querySelector('#payment__card-number');
 var MAX_CARD_LENGTH = 16;
@@ -499,26 +534,57 @@ var validationCardNumber = function () {
   return (checkSum % 10 === 0);
 };
 
-// добавим валидацию карты на поле с номером карты
+cardNumber.addEventListener('blur', function () {
+  if (validationCardNumber() === false) {
+    cardNumber.setCustomValidity('Введен неверный номер');
+  } else {
+    cardNumber.setCustomValidity('');
+  }
+  validationCardStatus();
+});
 
-var validationCvc = formPayment.querySelector('#payment__card-cvc');
+// валидация CVC
+
+// var validationCvc = formPayment.querySelector('#payment__card-cvc');
 
 var validationCardCvc = function () {
-  var arrayCardCvc = validationCvc.value.split('');
-  if (validationCvc.value.length !== 0) {
+  var arrayCardCvc = cardCvc.value.split('');
+  if (cardCvc.value.length !== 0) {
     if (arrayCardCvc[0] > 0) {
+      cardCvc.setCustomValidity('');
       return true;
     }
-  } return false;
+  } cardCvc.setCustomValidity('Диапазон значений должен быть от 100 до 999');
+  validationCardStatus();
+  return false;
 };
 
-paymentCardNumber.addEventListener('blur', function () {
-  if (validationCardNumber() && paymentCardDateValidate() && validationCardCvc()) {
-    document.querySelector('.payment__card-status').textContent = 'одобрен';
+cardCvc.addEventListener('blur', validationCardCvc);
+
+// доставка
+
+var deliverFloor = deliverWrap.querySelector('#deliver__floor');
+
+deliverFloor.addEventListener('blur', function () {
+  var valueDeliverFloor = deliverFloor.value;
+  if (isNaN(valueDeliverFloor)) {
+    deliverFloor.setCustomValidity('Поле должно содержать только числа');
   } else {
-    document.querySelector('.payment__card-status').textContent = 'не определен';
+    deliverFloor.setCustomValidity('');
   }
 });
+
+
+// При клике на input изменение изображения
+
+var choseMapImg = function (evt) {
+  var storeMapImage = deliverWrap.querySelector('.deliver__store-map-img');
+  if (evt.target.name === 'store') {
+    storeMapImage.src = 'img/map/' + evt.target.value + '.jpg';
+  }
+};
+
+deliverStore.addEventListener('click', choseMapImg);
 
 // ОБРАБАТЫВАЕМ  .range__btn в фильтре по цене://///////////////////////////////////////////////////////
 
@@ -591,3 +657,4 @@ priceRangeBtnRight.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
   priceRangeBtnHandler(evt, priceRangeBtnRight, positionBtnLeft, priceRangeBarWidth, rangePriceMax, false);
 });
+
