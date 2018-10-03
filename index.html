@@ -144,7 +144,7 @@
   <section class="buy">
     <h2 class="visually-hidden">Оформление покупки</h2>
 
-    <form action="https://js.dump.academy/candyshop" method="post" class="buy__form">
+    <form action="https://js.dump.academy/candyshop" method="post" class="buy__form" autocomplete="off">
       <section class="goods">
         <div class="goods__wrap container">
           <h2 class="group-title goods__title" id="basket">Твои покупки</h2>
@@ -185,7 +185,8 @@
               </li>
 
               <li class="text-input contact-data__input-wrap">
-                <input type="email" class="text-input__input" name="email" id="contact-data__email" placeholder="Почта">
+                <input type="email" class="text-input__input" name="email" id="contact-data__email" placeholder="Почта" pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}
+  [a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$">
                 <label for="contact-data__email" class="text-input__label">Почта</label>
               </li>
 
