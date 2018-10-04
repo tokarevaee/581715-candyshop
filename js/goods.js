@@ -509,15 +509,15 @@ var MAX_CARD_LENGTH = 16;
 var validationCardNumber = function () {
   var cardValue = paymentCardNumber.value;
   var charLess = cardValue.replace(/\D/g, '');
-
+  var checkSum = 0;
   if (charLess.length !== 0) {
     var arrayNumber = charLess.split('');
 
     if (arrayNumber.length === MAX_CARD_LENGTH) {
       var value;
-      var checkSum = 0;
-      for (var i = 0; i < cardValue.length; i++) {
-        var number = +arrayNumber[i];
+
+      for (var i = 0; i < arrayNumber.length; i++) {
+        var number = parseInt(arrayNumber[i], 10);
         if (i % 2 === 0) {
           value = number * 2;
           if (value > 9) {
@@ -530,11 +530,10 @@ var validationCardNumber = function () {
       }
     }
   }
-
   return (checkSum % 10 === 0);
 };
 
-cardNumber.addEventListener('blur', function () {
+cardNumber.addEventListener('input', function () {
   if (validationCardNumber() === false) {
     cardNumber.setCustomValidity('Введен неверный номер');
   } else {
@@ -544,8 +543,6 @@ cardNumber.addEventListener('blur', function () {
 });
 
 // валидация CVC
-
-// var validationCvc = formPayment.querySelector('#payment__card-cvc');
 
 var validationCardCvc = function () {
   var arrayCardCvc = cardCvc.value.split('');
@@ -657,4 +654,3 @@ priceRangeBtnRight.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
   priceRangeBtnHandler(evt, priceRangeBtnRight, positionBtnLeft, priceRangeBarWidth, rangePriceMax, false);
 });
-
