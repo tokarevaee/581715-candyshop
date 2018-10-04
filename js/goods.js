@@ -465,7 +465,7 @@ var validationCardStatus = function () {
 
 // держатель карты
 
-cardholder.addEventListener('blur', function () {
+cardholder.addEventListener('input', function () {
   validationCardStatus();
 });
 
@@ -497,7 +497,7 @@ var paymentCardDateValidate = function () {
   return false;
 };
 
-cardDate.addEventListener('blur', paymentCardDateValidate);
+cardDate.addEventListener('input', paymentCardDateValidate);
 
 
 // Проверка введенного номера карты
@@ -559,7 +559,7 @@ var validationCardCvc = function () {
   return false;
 };
 
-cardCvc.addEventListener('blur', validationCardCvc);
+cardCvc.addEventListener('input', validationCardCvc);
 
 // доставка
 
