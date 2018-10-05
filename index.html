@@ -24,7 +24,7 @@
     <h2 class="visually-hidden">Каталог товаров</h2>
 
     <aside class="catalog__sidebar">
-      <form action="/" autocomplete="off">
+      <form action="/">
 
         <ul class="catalog__filter">
           <li class="input-btn">
@@ -144,7 +144,7 @@
   <section class="buy">
     <h2 class="visually-hidden">Оформление покупки</h2>
 
-    <form action="/" method="post" autocomplete="off">
+    <form action="https://js.dump.academy/candyshop" method="post" class="buy__form" autocomplete="off">
       <section class="goods">
         <div class="goods__wrap container">
           <h2 class="group-title goods__title" id="basket">Твои покупки</h2>
@@ -185,7 +185,8 @@
               </li>
 
               <li class="text-input contact-data__input-wrap">
-                <input type="text" class="text-input__input" name="email" id="contact-data__email" placeholder="Почта">
+                <input type="email" class="text-input__input" name="email" id="contact-data__email" placeholder="Почта" pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}
+  [a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$">
                 <label for="contact-data__email" class="text-input__label">Почта</label>
               </li>
 
@@ -215,24 +216,24 @@
               <div class="payment__inputs">
                 <div class="payment__card-group">
                   <p class="text-input text-input--light payment__input-wrap payment__input-wrap--card-number">
-                    <input type="text" class="text-input__input" name="card-number" id="payment__card-number" placeholder="Номер карты" minlength="16" maxlength="16" required>
+                    <input type="text" class="text-input__input" name="card-number" id="payment__card-number" placeholder="Номер карты" minlength="16" maxlength="16" pattern="[0-9]{16}" required>
                     <label class="text-input__label" for="payment__card-number">Номер карты</label>
                   </p>
 
                   <p class="text-input text-input--light payment__input-wrap payment__input-wrap--card-date">
-                    <input type="text" class="text-input__input" name="card-date" id="payment__card-date" placeholder="мм/гг" required>
+                    <input type="text" class="text-input__input" name="card-date" minlength="5" maxlength="5" id="payment__card-date" placeholder="мм/гг" required>
                     <label class="text-input__label" for="payment__card-date">мм/гг</label>
                   </p>
 
                   <p class="text-input text-input--light payment__input-wrap payment__input-wrap--cvc">
-                    <input type="text" class="text-input__input" name="card-cvc" id="payment__card-cvc" placeholder="CVC" required>
+                    <input type="text" class="text-input__input" name="card-cvc" id="payment__card-cvc" minlength="3" maxlength="3" placeholder="CVC"  required>
                     <label class="text-input__label text-input__label--lock" for="payment__card-cvc">CVC</label>
                   </p>
 
                 </div>
                 <div class="payment__cardholder-group">
                   <p class="text-input text-input--light payment__input-wrap payment__input-wrap--cardholder">
-                    <input type="text" class="text-input__input" name="cardholder" id="payment__cardholder" placeholder="ИМЯ ДЕРЖАТЕЛЯ" required>
+                    <input type="text" class="text-input__input" name="cardholder" pattern="[A-Za-z]{2,15}\s[A-Za-z]{2,15}" id="payment__cardholder" placeholder="ИМЯ ДЕРЖАТЕЛЯ" required>
                     <label class="text-input__label" for="payment__cardholder">ИМЯ ДЕРЖАТЕЛЯ</label>
                   </p>
 
@@ -244,7 +245,7 @@
                 </div>
               </div>
               <div class="describe">
-                <p class="describe__text"><b>Мы гарантируем безопасностной твоих данных.</b></p>
+                <p class="describe__text"><b>Мы гарантируем безопасность твоих данных.</b></p>
                 <p class="describe__text">Все данные банковской карты вводи точно как написано на карте.</p>
                 <p class="describe__text">Не волнуйся, наша система поможет с заполеннием.</p>
                 <p class="describe__text">После заполнения всех полей, система проверит функционирование карты и можно переходить к доставке.</p>
@@ -337,17 +338,17 @@
 
               <ul class="deliver__address-entry-fields">
                 <li class="text-input deliver__street">
-                  <input type="text" class="text-input__input" name="deliver-street" id="deliver__street" placeholder="Улица">
+                  <input type="text" class="text-input__input" name="deliver-street" id="deliver__street" placeholder="Улица" required>
                   <label class="text-input__label" for="deliver__street">Улица</label>
                 </li>
 
                 <li class="text-input deliver__house">
-                  <input type="text" class="text-input__input" name="deliver-house" id="deliver__house" placeholder="Дом">
+                  <input type="text" class="text-input__input" name="deliver-house" id="deliver__house" placeholder="Дом" required>
                   <label class="text-input__label" for="deliver__house">Дом</label>
                 </li>
 
                 <li class="text-input deliver__floor">
-                  <input type="text" class="text-input__input" name="deliver-floor" id="deliver__floor" placeholder="Эт.">
+                  <input type="text" class="text-input__input" name="deliver-floor" id="deliver__floor" placeholder="Эт." pattern="[0-9]{1,3}">
                   <label class="text-input__label" for="deliver__floor">Эт.</label>
                 </li>
 
@@ -438,7 +439,7 @@
       </div>
       <p class="card__btns-wrap">
         <a class="card__btn-favorite">Добавить в избранное</a>
-        <a href="#" class="card__btn">Добавить +1</a>
+        <a class="card__btn">Добавить +1</a>
       </p>
     </div>
   </article>
@@ -483,6 +484,5 @@
   </div>
 </template>
 <script src="js/goods.js"></script>
-<script src="js/form.js"></script>
 </body>
 </html>
