@@ -540,10 +540,8 @@ var validationCardNumber = function () {
   var checkSum = 0;
   if (charLess.length !== 0) {
     var arrayNumber = charLess.split('');
-
     if (arrayNumber.length === MAX_CARD_LENGTH) {
       var value;
-
       for (var i = 0; i < arrayNumber.length; i++) {
         var number = parseInt(arrayNumber[i], 10);
         if (i % 2 === 0) {
@@ -590,7 +588,7 @@ cardCvc.addEventListener('input', validationCardCvc);
 
 var deliverFloor = deliverWrap.querySelector('#deliver__floor');
 
-deliverFloor.addEventListener('blur', function () {
+deliverFloor.addEventListener('input', function () {
   var valueDeliverFloor = deliverFloor.value;
   if (isNaN(valueDeliverFloor)) {
     deliverFloor.setCustomValidity('Поле должно содержать только числа');
@@ -610,8 +608,6 @@ var choseMapImg = function (evt) {
 };
 
 deliverStore.addEventListener('click', choseMapImg);
-
-// ОБРАБАТЫВАЕМ  .range__btn в фильтре по цене://///////////////////////////////////////////////////////
 
 var priceRangeBar = document.querySelector('.range__filter');
 var priceRangeBtnLeft = priceRangeBar.querySelector('.range__btn--left');
