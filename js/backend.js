@@ -11,7 +11,7 @@
     INTERNAL_SERVER_ERROR: 500,
   };
 
-  // обработка успешного/не успешного запроса ---------------------------------
+  // обработка успешного/не успешного запроса
   var setup = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
 
@@ -32,24 +32,21 @@
     xhr.addEventListener('error', function () {
       onError('Произошла ошибка соединения');
     });
-
     xhr.addEventListener('timeout', function () {
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
-
     xhr.timeout = SERVER_TIME;
-
     return xhr;
   };
 
-  // загрущка каталога
+  // загрузка каталога с сервера
   var load = function (onLoad, onError) {
     var xhr = setup(onLoad, onError);
     xhr.open('GET', LOAD_URL);
     xhr.send();
   };
 
-  // на сервер форму
+  // отправка на сервер форму
   var upload = function (data, onLoad, onError) {
     var xhr = setup(onLoad, onError);
     xhr.open('POST', UPLOAD_URL);
