@@ -217,4 +217,67 @@
   };
 
   deliverStore.addEventListener('click', choseMapImg);
+
+
+  var orderCreation = document.querySelector('.buy').querySelector('form');
+  var orderCreationSuccess = document.querySelector('.order-creation__success');
+  var orderCreationError = document.querySelector('.order-creation__error');
+  var modalCloseSuccess = orderCreationSuccess.querySelector('.modal__close');
+  var modalCloseError = orderCreationError.querySelector('.modal__close');
+
+  var onModalEscPress = function (evt) {
+    if (evt.keyCode === window.KEYCODE.ESC) {
+      closeOrderCreationSuccess();
+      closeOrderCreationError();
+    }
+  };
+
+  var closeOrderCreationSuccess = function () {
+    orderCreationSuccess.classList.add('modal--hidden');
+    document.removeEventListener('keydown', onModalEscPress);
+  };
+
+  modalCloseSuccess.addEventListener('click', function () {
+    closeOrderCreationSuccess();
+  });
+
+  modalCloseSuccess.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === window.KEYCODE.ENTER) {
+      closeOrderCreationSuccess();
+    }
+  });
+
+  var closeOrderCreationError = function () {
+    orderCreationError.classList.add('modal--hidden');
+    document.removeEventListener('keydown', onModalEscPress);
+  };
+
+  modalCloseError.addEventListener('click', function () {
+    closeOrderCreationError();
+  });
+
+  modalCloseError.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === window.KEYCODE.ENTER) {
+      closeOrderCreationError();
+    }
+  });
+
+  var saveSuccessHandler = function () {
+    orderCreationSuccess.classList.remove('modal--hidden');
+    document.addEventListener('keydown', onModalEscPress);
+    orderCreation.reset();
+  };
+
+  var saveErrorHandler = function (errorMessage) {
+    orderCreationError.classList.remove('modal--hidden');
+    document.addEventListener('keydown', onModalEscPress);
+    var orderErrorMessage = document.querySelector('.error__code');
+    orderErrorMessage.textContent = errorMessage;
+  };
+
+  orderCreation.addEventListener('submit', function (evt) {
+    window.backend.upload(new FormData(orderCreation), saveSuccessHandler, saveErrorHandler);
+    evt.preventDefault();
+  });
+
 })();

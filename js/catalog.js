@@ -155,7 +155,7 @@
     candyElement.querySelector('.card__title').textContent = candy.name;
 
     var candyImage = candyElement.querySelector('.card__img');
-    candyImage.src = candy.picture;
+    candyImage.src = 'img/cards/' + candy.picture;
     candyImage.alt = candy.name;
 
     var cardPrice = candyElement.querySelector('.card__price');
@@ -221,14 +221,66 @@
     return candyElement;
   };
 
-  var fragment = document.createDocumentFragment();
-  var appendCandy = function () {
 
-    for (var i = 0; i < window.candyGoods.length; i++) {
-      fragment.appendChild(renderCandy(window.candyGoods[i]));
+  var ESC_KEY = 27;
+
+  var modals = document.querySelectorAll('.modal');
+  var errorModal = document.querySelector('.order-creation__error');
+
+  var onEscKeyPress = function (evt) {
+    if (evt.keyCode === ESC_KEY) {
+      window.modals.hideModals();
     }
-
-    catalogCards.appendChild(fragment);
   };
-  appendCandy();
+
+  var onModalCloseClick = function (evt) {
+    if (evt.target.classList.contains('modal__close')) {
+      window.modals.hideModals();
+    }
+  };
+
+  var addEscHandler = function () {
+    document.addEventListener('keydown', onEscKeyPress);
+  };
+
+  var removeEscHandler = function () {
+    document.removeEventListener('keydown', onEscKeyPress);
+  };
+
+  document.addEventListener('click', onModalCloseClick);
+
+  window.modals = {
+
+    showErrorModal: function (errMessage) {
+      errorModal.querySelector('.modal__message').textContent = errMessage;
+      errorModal.classList.remove('modal--hidden');
+      addEscHandler();
+    },
+
+    hideModals: function () {
+      for (var i = 0; i < modals.length; i++) {
+        modals[i].classList.add('modal--hidden');
+      }
+
+      removeEscHandler();
+    },
+  };
+
+
+  var renderGoodsList = function () {
+    var fragment = document.createDocumentFragment();
+
+    var successHandler = function (response) {
+      window.candyGoods = response;
+      for (var i = 0; i < window.candyGoods.length; i++) {
+        fragment.appendChild(renderCandy(window.candyGoods[i]));
+      }
+
+      catalogCards.appendChild(fragment);
+
+    };
+    window.backend.load(successHandler, window.modals.showErrorModal);
+  };
+  // appendCandy();
+  renderGoodsList();
 })();

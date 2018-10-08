@@ -20,4 +20,9 @@
     getRandomAttribute: getRandomAttribute,
     getRandomNumber: getRandomNumber,
   };
+
+  window.KEYCODE = {
+    ESC: 27,
+    ENTER: 13
+  };
 })();
