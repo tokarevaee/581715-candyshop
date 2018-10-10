@@ -24,9 +24,9 @@
     <h2 class="visually-hidden">Каталог товаров</h2>
 
     <aside class="catalog__sidebar">
-      <form action="/">
+      <form action="/" id="filter-form" autocomplete="off">
 
-        <ul class="catalog__filter">
+        <ul class="catalog__filter food-type">
           <li class="input-btn">
             <input class="input-btn__input visually-hidden input-btn__input--checkbox" name="food-type" value="icecream" type="checkbox" id="filter-icecream" >
             <label class="input-btn__label input-btn__label--checkbox" for="filter-icecream">Мороженное</label>
@@ -58,7 +58,7 @@
           </li>
         </ul>
 
-        <ul class="catalog__filter">
+        <ul class="catalog__filter food-property">
           <li class="input-btn">
             <input class="input-btn__input visually-hidden input-btn__input--checkbox" name="food-property" value="sugar-free" type="checkbox" id="filter-sugar-free" >
             <label class="input-btn__label input-btn__label--checkbox" for="filter-sugar-free">Без сахара</label>
@@ -92,7 +92,7 @@
           </div>
         </section>
 
-        <ul class="catalog__filter">
+        <ul class="catalog__filter mark">
           <li class="input-btn">
             <input class="input-btn__input visually-hidden input-btn__input--checkbox" name="mark" value="favorite" type="checkbox" id="filter-favorite" >
             <label class="input-btn__label input-btn__label--checkbox" for="filter-favorite">Только избранное</label>
@@ -106,7 +106,7 @@
           </li>
         </ul>
 
-        <ul class="catalog__filter">
+        <ul class="catalog__filter sort">
           <li class="input-btn">
             <input class="input-btn__input visually-hidden input-btn__input--radio" name="sort" value="popular" type="radio" id="filter-popular" checked>
             <label class="input-btn__label input-btn__label--radio" for="filter-popular">Сначала популярные</label>
@@ -488,5 +488,6 @@
 <script src="js/catalog.js"></script>
 <script src="js/validation.js"></script>
 <script src="js/filter.js"></script>
+
 </body>
 </html>

@@ -1,8 +1,32 @@
 'use strict';
 
 (function () {
-  // var catalogSidebar = document.querySelector('.catalog__sidebar');
-  // var showAll = catalogSidebar.querySelector('.catalog__submit');
+
+  var filterForm = document.querySelector('#filter-form');
+  // var foodType = filterForm.querySelector('.food-type');
+
+  filterForm.addEventListener('change', function () {
+    window.catalog.element.innerHTML = '';
+    var filteredGoods = window.catalog.candyGoods().slice();
+
+    // var typeFilters = foodType.querySelectorAll('input[type=checkbox]:checked');
+    // if (typeFilters!==null) {
+    //   typeFilters.forEach (function(item)) {
+    //     filteredGoods = filteredByType(item);
+    //   }
+    // }
+    // фильтрация
+
+    window.catalog.renderGoods(filteredGoods);
+  });
+
+  filterForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    filterForm.reset();
+    // сбросить ценовой фильтр
+    window.catalog.element.innerHTML = '';
+    window.utils.debounce(window.catalog.renderGoods(window.catalog.candyGoods()));
+  });
 
   var priceRangeBar = document.querySelector('.range__filter');
   var priceRangeBtnLeft = priceRangeBar.querySelector('.range__btn--left');
@@ -22,6 +46,7 @@
   priceRangeBtnRight.style.left = positionBtnRight + 'px';
   priceRangeLine.style.left = positionBtnLeft + priceBtnWidth / 2 + 'px';
   priceRangeLine.style.right = priceRangeBarWidth - positionBtnRight + priceBtnWidth / 2 + 'px';
+
 
   var calcPriceValue = function (positionBtn) {
     return Math.round(positionBtn / priceRangeBarWidth * (MAX_PRICE - MIN_PRICE) + MIN_PRICE);
@@ -72,12 +97,4 @@
     evt.preventDefault();
     priceRangeBtnHandler(evt, priceRangeBtnRight, positionBtnLeft, priceRangeBarWidth, rangePriceMax, false);
   });
-
-  // var filtersSidebars = function () {
-  //   var filtersGoods = [];
-  //   filtersGoods = window.candyGoods.slice(window.successHandler(window.candyGoods));
-  //   console.log(filtersGoods);
-  // };
-  //
-  // filtersSidebars();
 })();

@@ -2,14 +2,15 @@
 
 (function () {
 
-  var STARS_RATING = [
-    'stars__rating--one',
-    'stars__rating--two',
-    'stars__rating--three',
-    'stars__rating--four',
-    'stars__rating--five'
-  ];
+  var ratings = {
+    1: 'one',
+    2: 'two',
+    3: 'three',
+    4: 'four',
+    5: 'five'
+  };
 
+  var candyGoods = [];
   // Массив корзины
   var basketGoods = [];
 
@@ -159,7 +160,7 @@
     cardPrice.querySelector('.card__weight').textContent = '/ ' + candy.weight + 'Г';
     var starsRating = candyElement.querySelector('.stars__rating');
     starsRating.classList.remove('stars__rating--five');
-    starsRating.classList.add(window.utils.getRandomAttribute(STARS_RATING));
+    starsRating.classList.add('stars__rating--' + ratings[candy.rating.value]);
     candyElement.querySelector('.star__count').textContent = candy.rating.number;
     candyElement.querySelector('.card__characteristic').textContent = candy.nutritionFacts.sugar ? 'Содержит сахар' : 'Без сахара';
     candyElement.querySelector('.card__composition-list').textContent = candy.nutritionFacts.contents;
@@ -216,13 +217,13 @@
 
   var onEscKeyPress = function (evt) {
     if (evt.keyCode === window.KEYCODE.ESC) {
-      window.modals.hideModals();
+      hideModals();
     }
   };
 
   var onModalCloseClick = function (evt) {
     if (evt.target.classList.contains('modal__close')) {
-      window.modals.hideModals();
+      hideModals();
     }
   };
 
@@ -236,38 +237,42 @@
 
   document.addEventListener('click', onModalCloseClick);
 
-  window.modals = {
 
-    showErrorModal: function (errMessage) {
-      errorModal.querySelector('.modal__message').textContent = errMessage;
-      errorModal.classList.remove('modal--hidden');
-      addEscHandler();
-    },
-
-    hideModals: function () {
-      for (var i = 0; i < modals.length; i++) {
-        modals[i].classList.add('modal--hidden');
-      }
-
-      removeEscHandler();
-    },
-  };
-
-  var renderGoodsList = function () {
+  var renderGoods = function (goods) {
     var fragment = document.createDocumentFragment();
-    window.candyGoods = [];
-    window.successHandler = function (response) {
-
-      window.candyGoods = response;
-      for (var i = 0; i < response.length; i++) {
-        fragment.appendChild(renderCandy(response[i]));
-      }
-      catalogCards.appendChild(fragment);
-      return window.candyGoods;
-    };
-    // console.log(window.candyGoods);
-    window.backend.load(window.successHandler, window.modals.showErrorModal);
+    for (var i = 0; i < goods.length; i++) {
+      fragment.appendChild(renderCandy(goods[i]));
+    }
+    catalogCards.appendChild(fragment);
   };
-  renderGoodsList();
 
+  var successHandler = function (response) {
+    candyGoods = response;
+    renderGoods(candyGoods);
+  };
+
+  window.backend.load(successHandler, showModal);
+
+
+  var showModal = function (errMessage) {
+    errorModal.querySelector('.modal__message').textContent = errMessage;
+    errorModal.classList.remove('modal--hidden');
+    addEscHandler();
+  };
+
+  var hideModals = function () {
+    for (var i = 0; i < modals.length; i++) {
+      modals[i].classList.add('modal--hidden');
+    }
+
+    removeEscHandler();
+  };
+
+  window.catalog = {
+    candyGoods: function () {
+      return candyGoods;
+    },
+    element: catalogCards,
+    renderGoods: renderGoods
+  };
 })();
