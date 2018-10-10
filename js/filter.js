@@ -1,7 +1,8 @@
 'use strict';
 
 (function () {
-// ОБРАБАТЫВАЕМ  .range__btn в фильтре по цене://///////////////////////////////////////////////////////
+  // var catalogSidebar = document.querySelector('.catalog__sidebar');
+  // var showAll = catalogSidebar.querySelector('.catalog__submit');
 
   var priceRangeBar = document.querySelector('.range__filter');
   var priceRangeBtnLeft = priceRangeBar.querySelector('.range__btn--left');
@@ -22,6 +23,13 @@
   priceRangeLine.style.left = positionBtnLeft + priceBtnWidth / 2 + 'px';
   priceRangeLine.style.right = priceRangeBarWidth - positionBtnRight + priceBtnWidth / 2 + 'px';
 
+  // var filtersSidebars = function (response) {
+  //
+  //   // var filtersGoods = window.candyGoods.slice(window.successHandler(response));
+  //   // console.log(filtersGoods);
+  // };
+  //
+  // filtersSidebars();
 
   var calcPriceValue = function (positionBtn) {
     return Math.round(positionBtn / priceRangeBarWidth * (MAX_PRICE - MIN_PRICE) + MIN_PRICE);
@@ -72,4 +80,28 @@
     evt.preventDefault();
     priceRangeBtnHandler(evt, priceRangeBtnRight, positionBtnLeft, priceRangeBarWidth, rangePriceMax, false);
   });
+
+  // // фильтр по типу продукта
+  // var filterByKind = function (evt, items) {
+  //   var target = evt.target.innerText;
+  //   removeItems();
+  //   Object.keys(items)
+  //     .forEach(function (id) {
+  //       if (items[id].good.kind === target) {
+  //         addCardToFragment(items[id].good, fragment);
+  //       }
+  //     });
+  //   catalogCards.appendChild(fragment);
+  // };
+  //
+  // var filterBtnsHandler = function (evt) {
+  //   evt.preventDefault();
+  //   var target = evt.target.innerText;
+  //   if (target === 'Мороженое' || target === 'Газировка' || target === 'Жевательная резинка' || target === 'Мармелад' || target === 'Зефир') {
+  //     filterByKind(evt, window.data.catalog);
+  //   }
+  // };
+  //
+  // catalogSidebar.addEventListener('click', filterBtnsHandler);
+
 })();

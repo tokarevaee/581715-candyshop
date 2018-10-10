@@ -252,19 +252,22 @@
       removeEscHandler();
     },
   };
+
   var renderGoodsList = function () {
     var fragment = document.createDocumentFragment();
 
-    var successHandler = function (response) {
+    window.successHandler = function (response) {
       window.candyGoods = response;
-      for (var i = 0; i < window.candyGoods.length; i++) {
-        fragment.appendChild(renderCandy(window.candyGoods[i]));
+      for (var i = 0; i < response.length; i++) {
+        fragment.appendChild(renderCandy(response[i]));
       }
-
+      // console.log(window.candyGoods);
       catalogCards.appendChild(fragment);
 
     };
-    window.backend.load(successHandler, window.modals.showErrorModal);
+
+    window.backend.load(window.successHandler, window.modals.showErrorModal);
   };
   renderGoodsList();
+
 })();
