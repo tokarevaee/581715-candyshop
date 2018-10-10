@@ -255,17 +255,17 @@
 
   var renderGoodsList = function () {
     var fragment = document.createDocumentFragment();
-
+    window.candyGoods = [];
     window.successHandler = function (response) {
+
       window.candyGoods = response;
       for (var i = 0; i < response.length; i++) {
         fragment.appendChild(renderCandy(response[i]));
       }
-      // console.log(window.candyGoods);
       catalogCards.appendChild(fragment);
-
+      return window.candyGoods;
     };
-
+    // console.log(window.candyGoods);
     window.backend.load(window.successHandler, window.modals.showErrorModal);
   };
   renderGoodsList();
